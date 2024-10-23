@@ -1,5 +1,4 @@
 import random
-from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from os import environ
 import starkbank
