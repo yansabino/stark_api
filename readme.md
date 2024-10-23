@@ -1,12 +1,17 @@
-# Stark Bank Invoice & Webhook API
+```markdown
+# Invoice App
 
-This Flask API integrates with the Stark Bank API to create invoices and handle webhook callbacks for payments. When an invoice is paid, the app receives a webhook, processes the payment, and transfers the net amount (after fees) to a specified account.
+This Flask application integrates with Stark Bank's API to create invoices and handle webhook callbacks. The application is designed to create a random number of invoices (between 8 to 12) every 3 hours for 24 hours. Upon receiving a webhook callback for an invoice credit, it processes the payment and initiates a transfer to a specified bank account.
+
+## Deployed Application
+
+You can access the deployed application at: [Invoice App](https://coherent-broker-439504-h3.uc.r.appspot.com)
 
 ## Features
 
-- **Invoice Creation**: Issues random invoices at regular intervals.
-- **Webhook Callback**: Receives webhook notifications when invoices are paid.
-- **Transfer**: Processes the invoice payment and transfers the received amount (minus fees) to a specified bank account.
+- **Create Invoices**: Issues a specified number of invoices every 3 hours.
+- **Webhook Integration**: Listens for webhook callbacks from Stark Bank for invoice credits.
+- **Transfer Processing**: Sends the received amount (minus fees) to a specified bank account upon receiving payment confirmation.
 
 ## Project Structure
 
@@ -15,7 +20,6 @@ The application follows a clean architecture approach with the following layers:
 - **Controllers**: Handle HTTP requests and responses.
 - **Use Cases**: Contain the business logic of the application.
 - **Services**: Interact with external APIs (like Stark Bank).
-- **Gateways**: Provide access to external services.
 
 ### Folder Structure
 
@@ -36,146 +40,80 @@ stark_bank_api/
 │   ├── __init__.py
 │   ├── invoice_service.py
 │   └── transfer_service.py
-└── gateways/                # Gateways for external services
-    ├── __init__.py
-    └── starkbank_gateway.py
+
 ```
 
 ## Requirements
 
-- Python 3.8 or higher
+- Python 3.7 or higher
 - Flask
-- Stark Bank Python SDK
+- APScheduler
+- Stark Bank SDK
+- Gunicorn
 
 ## Installation
 
-1. **Clone the repository**:
-
+1. Clone this repository:
    ```bash
-   git clone https://github.com/your-repository/stark_bank_api.git
-   cd stark_bank_api
+   git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+   cd YOUR_REPO
    ```
 
-2. **Create a virtual environment**:
-
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-   ```
-
-3. **Install dependencies**:
-
+2. Install the required packages:
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Set environment variables**:
+3. Set up your environment variables (if applicable).
 
-   Create a `.env` file or export the following environment variables in your shell:
+## Running the Application Locally
 
-   ```bash
-   export STARKBANK_PROJECT="your-stark-bank-project-id"
-   export STARKBANK_ENVIRONMENT="sandbox"  # Use "production" for production
-   export STARKBANK_API_KEY="your-stark-bank-api-key"
-   ```
+To run the application locally, execute:
 
-5. **Run the Flask app**:
+```bash
+python app.py
+```
 
-   ```bash
-   python app.py
-   ```
+The app will run on `http://127.0.0.1:5000`.
 
 ## API Endpoints
 
-### 1. Create Invoice
+### Create Invoice
 
-- **URL**: `/invoices/`
-- **Method**: `POST`
-- **Description**: This endpoint creates a random invoice using the Stark Bank API.
+- **Endpoint**: `POST /invoices/`
+- **Description**: Creates a new invoice.
 
-#### Response Example:
+### Webhook for Invoice Credit
 
-```json
-{
-  "id": "unique-invoice-id",
-  "amount": 5000,
-  "due": "2024-10-23T10:00:00Z"
-}
-```
+- **Endpoint**: `POST /webhook/invoice`
+- **Description**: Receives a webhook callback for invoice credit.
 
-### 2. Webhook for Invoice Payment
+## Testing
 
-- **URL**: `/webhook/invoice`
-- **Method**: `POST`
-- **Description**: This endpoint handles webhook callbacks from Stark Bank. When an invoice is paid, it processes the payment and makes a transfer to the specified account.
-
-#### Request Example (Webhook Payload):
-
-```json
-{
-  "event": {
-    "log": {
-      "id": "unique-log-id",
-      "created": "2024-10-23T10:00:00Z",
-      "type": "credited",
-      "invoice": {
-        "id": "unique-invoice-id",
-        "amount": 5000,
-        "status": "paid",
-        "fee": 50,
-        "created": "2024-10-22T10:00:00Z",
-        "due": "2024-10-23T10:00:00Z",
-        "tax_id": "123.456.789-10",
-        "recipient": {
-          "name": "John Doe",
-          "tax_id": "123.456.789-10"
-        }
-      }
-    }
-  }
-}
-```
-
-#### Response Example:
-
-```json
-{
-  "status": "success",
-  "transfer_id": "unique-transfer-id"
-}
-```
-
-## Error Handling
-
-- **400 Bad Request**: For invalid or missing data in the request.
-- **500 Internal Server Error**: For unexpected server errors or failed Stark Bank API calls.
-
-### Global Error Handling Example:
-
-```json
-{
-  "error": "Detailed error message",
-  "message": "An unexpected error occurred."
-}
-```
-
-## How the System Works
-
-1. **Invoice Creation**: The `InvoiceController` handles requests for creating invoices. It calls the `CreateInvoiceUseCase`, which interacts with `InvoiceService` to generate invoices using the Stark Bank API.
-2. **Webhook Handling**: When a webhook callback is received (indicating that an invoice has been paid), the `WebhookController` extracts the invoice data and passes it to the `HandleWebhookUseCase`. This use case then uses `TransferService` to process the payment and initiate a transfer to a predefined bank account.
-
-## Running Tests
-
-To run tests, you can use any Python testing framework such as `unittest` or `pytest`. Here is an example command to run tests with `pytest`:
+To run the unit tests, execute:
 
 ```bash
-pytest tests/
+pytest tests
 ```
+
+Ensure all dependencies are installed and the application is configured properly before running tests.
 
 ## Deployment
 
-This application can be deployed on any platform that supports Python and Flask (e.g., Heroku, AWS, or Google Cloud). Ensure that the environment variables are set for the deployment environment.
+This application is deployed on Google App Engine. To redeploy, use the following command:
+
+```bash
+gcloud app deploy
+```
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```
+
+### Notes
+
+- Make sure to replace `YOUR_USERNAME` and `YOUR_REPO` with your actual GitHub username and repository name if you include the clone command.
+- Update the README further based on any specific configurations or additional features you might have implemented.
+
+Feel free to adjust any sections or add additional information as needed!
