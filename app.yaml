@@ -1,0 +1,14 @@
+runtime: python311  # Specify the Python runtime version
+entrypoint: gunicorn -b :$PORT app:app
+
+handlers:
+  - url: /static
+    static_dir: static
+
+  - url: /.*
+    script: auto
+
+env_variables:
+  STARKBANK_PROJECT: "your-stark-bank-project-id"
+  STARKBANK_ENVIRONMENT: "sandbox"  # or production
+  STARKBANK_API_KEY: "your-stark-bank-api-key"

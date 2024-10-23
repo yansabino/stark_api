@@ -1,0 +1,84 @@
+# Python-related
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.env
+*.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Flask-specific
+instance/
+*.db
+*.sqlite3
+*.log
+
+# Virtual environment
+.vscode/
+.idea/
+.PyCharm/
+*.swp
+*~
+
+# macOS-specific
+.DS_Store
+
+# Linux-specific
+*.so
+
+# Byte-compiled / optimized / DLL files
+*.pyc
+*.pyo
+*.pyd
+
+# Coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Testing
+.pytest_cache/
+nosetests.xml
+coverage/
+*.egg-info/
+.eggs/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Pycharm
+.idea/
+
+# Logs and databases
+logs/
+*.log
+*.pot
+*.pyc
+*.sqlite3
+
+# Local development environment
+.env
+.env.*
+
+# Backup files
+*.bak
+*.swp
+
+# Pipenv
+Pipfile.lock
+
+# Docker
+docker-compose*.yaml
+Dockerfile
+
+# Ignore local application configurations
+config.py
